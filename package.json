@@ -1,0 +1,31 @@
+{
+    "name": "select-translate",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "preview": "vite preview",
+        "format": "prettier --write . | grep -v 'unchanged'"
+    },
+    "dependencies": {
+        "@tailwindcss/vite": "^4.1.16",
+        "react": "^19.1.1",
+        "react-dom": "^19.1.1",
+        "tailwindcss": "^4.1.16"
+    },
+    "devDependencies": {
+        "@egoist/tailwindcss-icons": "^1.9.0",
+        "@iconify-json/mingcute": "^1.2.5",
+        "@trivago/prettier-plugin-sort-imports": "^6.0.0",
+        "@types/react": "^19.1.11",
+        "@types/react-dom": "^19.1.7",
+        "@vitejs/plugin-react": "^5.0.1",
+        "prettier": "^3.6.2",
+        "prettier-plugin-tailwindcss": "^0.7.1",
+        "typescript": "^5.9.2",
+        "vite": "^7.1.3",
+        "vite-plugin-monkey": "^7.1.1"
+    }
+}
