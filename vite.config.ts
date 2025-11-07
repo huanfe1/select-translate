@@ -1,4 +1,3 @@
-import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import monkey from 'vite-plugin-monkey';
@@ -13,8 +12,8 @@ export default defineConfig({
                 icon: 'https://vitejs.dev/logo.svg',
                 namespace: 'npm/vite-plugin-monkey',
                 match: ['*://*/*'],
+                connect: ['translate.googleapis.com'],
             },
         }),
-        tailwindcss(),
     ],
 });
