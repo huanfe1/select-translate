@@ -15,8 +15,9 @@ export default defineConfig({
                 namespace: 'https://www.github.com/huanfe1/',
                 match: ['*://*/*'],
                 connect: ['translate.googleapis.com'],
-                description: '划词翻译',
+                description: '划词翻译，支持选中英文文本后快速翻译成中文。',
                 license: 'MIT',
+                'run-at': 'document-end',
             },
             build: {
                 externalGlobals: {

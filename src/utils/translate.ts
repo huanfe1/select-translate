@@ -1,15 +1,16 @@
-import { GM_xmlhttpRequest } from '$';
+import { GM_xmlhttpRequest, unsafeWindow } from '$';
 
-const translator = await window.Translator.create({
-    sourceLanguage: 'en',
-    targetLanguage: 'zh',
-});
+let translate = null;
 
-export const translate = async (text: string): Promise<string> => {
-    if (translator) {
-        return translator.translate(text);
-    }
+if ('Translator' in self) {
+    const translator = await unsafeWindow.Translator.create({
+        sourceLanguage: 'en',
+        targetLanguage: 'zh',
+    });
+    translate = translator.translate;
+}
 
+translate = (text: string) => {
     return new Promise((resolve, reject) => {
         GM_xmlhttpRequest({
             url: `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=zh-CN&dt=t&q=${encodeURIComponent(text)}`,
@@ -23,9 +24,11 @@ export const translate = async (text: string): Promise<string> => {
                     reject(new Error('解析翻译结果失败'));
                 }
             },
-            onerror: error => {
+            onerror: () => {
                 reject(new Error('翻译请求失败'));
             },
         });
     });
 };
+
+export { translate };

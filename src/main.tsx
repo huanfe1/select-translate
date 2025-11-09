@@ -15,7 +15,7 @@ if (import.meta.hot) {
     });
 }
 
-const host = GM_addElement(document.body, 'div', { id: 'select-translate' });
+const host = GM_addElement(document.body, 'div');
 const shadow = host.attachShadow({ mode: 'open' });
 shadow.adoptedStyleSheets = [sheet];
 createRoot(shadow).render(
