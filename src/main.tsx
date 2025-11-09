@@ -1,6 +1,6 @@
 import { GM_addElement } from '$';
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
 
 import App from './App';
 import tailwindcss from './styles/tailwind.css?inline';
@@ -18,8 +18,8 @@ if (import.meta.hot) {
 const host = GM_addElement(document.body, 'div', { id: 'select-translate' });
 const shadow = host.attachShadow({ mode: 'open' });
 shadow.adoptedStyleSheets = [sheet];
-ReactDOM.createRoot(shadow).render(
-    <React.StrictMode>
+createRoot(shadow).render(
+    <StrictMode>
         <App />
-    </React.StrictMode>,
+    </StrictMode>,
 );

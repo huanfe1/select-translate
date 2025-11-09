@@ -6,19 +6,19 @@
     "scripts": {
         "dev": "vite",
         "build": "tsc && vite build",
-        "preview": "vite preview",
+        "preview": "tsc && vite build &&vite preview",
         "format": "prettier --write . | grep -v 'unchanged'"
     },
     "dependencies": {
-        "react": "^19.1.1",
-        "react-dom": "^19.1.1"
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1"
     },
     "devDependencies": {
         "@egoist/tailwindcss-icons": "^1.9.0",
         "@iconify-json/mingcute": "^1.2.5",
         "@trivago/prettier-plugin-sort-imports": "^6.0.0",
-        "@types/react": "^19.1.11",
-        "@types/react-dom": "^19.1.7",
+        "@types/react": "^18.3.26",
+        "@types/react-dom": "^18.3.7",
         "@vitejs/plugin-react": "^4.7.0",
         "autoprefixer": "^10.4.21",
         "postcss": "^8.5.6",

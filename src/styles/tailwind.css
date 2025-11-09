@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:host {
+    font-family: 'PingFang SC', 'HarmonyOS Sans SC', 'Microsoft YaHei', 'SimSun', 'Arial', sans-serif;
+}

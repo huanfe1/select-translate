@@ -12,7 +12,7 @@ function App() {
 
     const iconClick = (e: React.MouseEvent<HTMLDivElement>) => {
         setIconStyle(undefined);
-        setPanelStyle({ left: e.clientX + 5, top: e.clientY + 20 });
+        setPanelStyle({ left: e.clientX - 160, top: e.clientY - 50, width: 320 });
     };
 
     useEffect(() => {
@@ -41,7 +41,7 @@ function App() {
             {iconStyle && (
                 <div
                     onClick={iconClick}
-                    className="fixed flex cursor-pointer items-center justify-center rounded-xl border bg-gray-100 p-1.5 shadow hover:bg-gray-200"
+                    className="fixed flex cursor-pointer items-center justify-center rounded-xl border border-gray-300 bg-gray-200 p-1.5 shadow-sm hover:bg-gray-300"
                     style={iconStyle}
                 >
                     <span className="i-mingcute-translate-2-line text-2xl"></span>

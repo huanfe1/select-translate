@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
-import monkey from 'vite-plugin-monkey';
+import monkey, { cdn } from 'vite-plugin-monkey';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -9,10 +9,20 @@ export default defineConfig({
         monkey({
             entry: 'src/main.tsx',
             userscript: {
+                name: '划词翻译',
+                author: 'huanfei',
                 icon: 'https://vitejs.dev/logo.svg',
-                namespace: 'npm/vite-plugin-monkey',
+                namespace: 'https://www.github.com/huanfe1/',
                 match: ['*://*/*'],
                 connect: ['translate.googleapis.com'],
+                description: '划词翻译',
+                license: 'MIT',
+            },
+            build: {
+                externalGlobals: {
+                    react: cdn.jsdelivr('React', 'umd/react.production.min.js'),
+                    'react-dom': cdn.jsdelivr('ReactDOM', 'umd/react-dom.production.min.js'),
+                },
             },
         }),
     ],
