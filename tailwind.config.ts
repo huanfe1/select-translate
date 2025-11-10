@@ -1,10 +1,13 @@
 import { getIconCollections, iconsPlugin } from '@egoist/tailwindcss-icons';
+import type { Config } from 'tailwindcss';
+import remToPx from 'tailwindcss-rem-to-px';
 
-/** @type {import('tailwindcss').Config} */
-export default {
+const config: Config = {
     content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
     theme: {
         extend: {},
     },
-    plugins: [iconsPlugin({ collections: getIconCollections(['mingcute']) })],
+    plugins: [iconsPlugin({ collections: getIconCollections(['mingcute']) }), remToPx()],
 };
+
+export default config;

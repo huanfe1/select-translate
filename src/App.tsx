@@ -41,7 +41,7 @@ function App() {
             {iconStyle && (
                 <div
                     onClick={iconClick}
-                    className="fixed flex cursor-pointer items-center justify-center rounded-xl border border-gray-300 bg-gray-200 p-1.5 shadow-sm hover:bg-gray-300"
+                    className="fixed z-[99999] flex cursor-pointer items-center justify-center rounded-xl border border-gray-300 bg-gray-200 p-1.5 shadow-sm hover:bg-gray-300"
                     style={iconStyle}
                 >
                     <span className="i-mingcute-translate-2-line text-2xl"></span>

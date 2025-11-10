@@ -48,6 +48,9 @@ importers:
       tailwindcss:
         specifier: ^3.4.18
         version: 3.4.18
+      tailwindcss-rem-to-px:
+        specifier: ^0.1.1
+        version: 0.1.1
       typescript:
         specifier: ^5.9.2
         version: 5.9.3
@@ -1218,6 +1221,9 @@ packages:
   systemjs@6.15.1:
     resolution: {integrity: sha512-Nk8c4lXvMB98MtbmjX7JwJRgJOL8fluecYCfCeYBznwmpOs8Bf15hLM6z4z71EDAhQVrQrI+wt1aLWSXZq+hXA==}
 
+  tailwindcss-rem-to-px@0.1.1:
+    resolution: {integrity: sha512-xTUV9CyiUsNEN2szde/cwf6AejmIJ27w00yAoQ7y0i3ilxMff3K8TKiBi1kUO4vGpcPS8ia1MV5xcH6njldTvw==}
+
   tailwindcss@3.4.18:
     resolution: {integrity: sha512-6A2rnmW5xZMdw11LYjhcI5846rt9pbLSabY5XPxo+XWdxwZaFEn47Go4NzFiHu9sNNmr/kXivP1vStfvMaK1GQ==}
     engines: {node: '>=14.0.0'}
@@ -2321,6 +2327,13 @@ snapshots:
   supports-preserve-symlinks-flag@1.0.0: {}
 
   systemjs@6.15.1: {}
+
+  tailwindcss-rem-to-px@0.1.1:
+    dependencies:
+      tailwindcss: 3.4.18
+    transitivePeerDependencies:
+      - tsx
+      - yaml
 
   tailwindcss@3.4.18:
     dependencies:

@@ -106,7 +106,7 @@ export default function Panel({ text, style }: PanelProps) {
     };
 
     return (
-        <div ref={panelRef} className="fixed z-50 w-80 overflow-hidden rounded-lg border bg-white shadow" style={currentStyle} onClick={e => e.stopPropagation()}>
+        <div ref={panelRef} className="fixed z-[99999] w-80 overflow-hidden rounded-lg border bg-white shadow" style={currentStyle} onClick={e => e.stopPropagation()}>
             <div className="p-4">
                 {loading ? (
                     <div className="flex items-center justify-center gap-2 py-4 text-gray-500">
