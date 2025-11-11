@@ -8,7 +8,10 @@ interface PanelProps {
     style?: CSSProperties;
 }
 
-export default function Panel({ text, style }: PanelProps) {
+export default function Panel({ text, style: initialStyle }: PanelProps) {
+    const GAP = 10;
+
+    const [style, setStyle] = useState<CSSProperties>(initialStyle || {});
     const [translation, setTranslation] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
@@ -17,16 +20,8 @@ export default function Panel({ text, style }: PanelProps) {
     const [rawTextVisible, setRawTextVisible] = useState<boolean>(GM_getValue('rawTextVisible', false));
 
     const panelRef = useRef<HTMLDivElement>(null);
-    const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
     const [isDragging, setIsDragging] = useState(false);
     const dragOffsetRef = useRef<{ offsetX: number; offsetY: number } | null>(null);
-
-    // 初始化位置
-    useEffect(() => {
-        if (style?.left !== undefined && style?.top !== undefined && !position) {
-            setPosition({ x: Number(style.left), y: Number(style.top) });
-        }
-    }, [style, position]);
 
     useEffect(() => {
         if (textRef.current === text) return;
@@ -64,14 +59,15 @@ export default function Panel({ text, style }: PanelProps) {
         if (!isDragging) return;
 
         const handleMouseMove = (e: MouseEvent) => {
-            if (!dragOffsetRef.current || position === null) return;
+            if (!dragOffsetRef.current) return;
 
             const newX = e.clientX - dragOffsetRef.current.offsetX;
             const newY = e.clientY - dragOffsetRef.current.offsetY;
-            setPosition({ x: newX, y: newY });
+            setStyle(style => ({ ...style, left: newX, top: newY }));
         };
 
         const handleMouseUp = () => {
+            adjustPosition();
             setIsDragging(false);
             dragOffsetRef.current = null;
         };
@@ -83,10 +79,10 @@ export default function Panel({ text, style }: PanelProps) {
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('mouseup', handleMouseUp);
         };
-    }, [isDragging, position]);
+    }, [isDragging]);
 
     const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (!panelRef.current || position === null) return;
+        if (!panelRef.current) return;
 
         const rect = panelRef.current.getBoundingClientRect();
         dragOffsetRef.current = {
@@ -98,15 +94,34 @@ export default function Panel({ text, style }: PanelProps) {
         e.stopPropagation();
     };
 
-    const currentStyle: CSSProperties = {
-        ...style,
-        left: position?.x ?? style?.left,
-        top: position?.y ?? style?.top,
-        cursor: isDragging ? 'grabbing' : 'default',
+    const adjustPosition = () => {
+        requestAnimationFrame(() => {
+            const rect = panelRef.current?.getBoundingClientRect();
+            if (!rect) return;
+            setStyle(style => {
+                const clientHeight = document.documentElement.clientHeight;
+                const clientWidth = document.documentElement.clientWidth;
+                let newStyle = { ...style };
+                if (rect.top < GAP) newStyle.top = GAP;
+                if (rect.top + rect.height > clientHeight) newStyle.top = clientHeight - rect.height - GAP;
+                if (rect.left < GAP) newStyle.left = GAP;
+                if (rect.right > clientWidth - GAP) newStyle.left = clientWidth - rect.width - GAP;
+                return newStyle;
+            });
+        });
     };
 
+    useEffect(() => {
+        if (translation) adjustPosition();
+    }, [translation]);
+
     return (
-        <div ref={panelRef} className="fixed z-[99999] w-80 overflow-hidden rounded-lg border bg-white shadow" style={currentStyle} onClick={e => e.stopPropagation()}>
+        <div
+            ref={panelRef}
+            className={`fixed z-[99999] w-80 overflow-hidden rounded-lg border bg-white shadow ${!isDragging && 'transition-all'}`}
+            style={style}
+            onClick={e => e.stopPropagation()}
+        >
             <div className="p-4">
                 {loading ? (
                     <div className="flex items-center justify-center gap-2 py-4 text-gray-500">
@@ -138,12 +153,7 @@ export default function Panel({ text, style }: PanelProps) {
                     >
                         <span className="i-mingcute-translate-2-line text-lg"></span>
                     </button>
-                    <button
-                        title="复制文本"
-                        onClick={handleCopy}
-                        className="flex items-center text-gray-400 transition-colors hover:text-gray-600"
-                        disabled={loading || !translation}
-                    >
+                    <button title="复制文本" onClick={handleCopy} className="flex items-center text-gray-400 transition-colors hover:text-gray-600">
                         <span className="i-mingcute-copy-line text-lg"></span>
                     </button>
                 </div>
