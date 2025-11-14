@@ -1,6 +1,11 @@
 import react from '@vitejs/plugin-react';
+import { readFileSync } from 'fs';
 import { defineConfig } from 'vite';
 import monkey, { cdn } from 'vite-plugin-monkey';
+
+const iconPath = './resources/logo.png';
+
+const iconData = `data:image/${iconPath.split('.').pop()};base64,${readFileSync(iconPath, 'base64')}`;
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -11,7 +16,7 @@ export default defineConfig({
             userscript: {
                 name: '划词翻译',
                 author: 'huanfei',
-                icon: 'https://vitejs.dev/logo.svg',
+                icon: iconData,
                 namespace: 'https://www.github.com/huanfe1/',
                 match: ['*://*/*'],
                 connect: ['translate.googleapis.com'],
