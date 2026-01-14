@@ -2,6 +2,7 @@ import { GM_getValue, GM_setValue } from '$';
 import { type CSSProperties, useEffect, useRef, useState } from 'react';
 
 import { translate } from '../utils/translate';
+import { MingcuteAlertLine, MingcuteCopyLine, MingcuteLoadingLine, MingcuteTranslate2Line } from './Icon';
 
 interface PanelProps {
     text: string;
@@ -125,12 +126,12 @@ export default function Panel({ text, style: initialStyle }: PanelProps) {
             <div className="p-4">
                 {loading ? (
                     <div className="flex items-center justify-center gap-2 py-4 text-gray-500">
-                        <span className="i-mingcute-loading-line animate-spin text-lg"></span>
+                        <MingcuteLoadingLine width={20} height={20} className="animate-spin" />
                         <span>翻译中...</span>
                     </div>
                 ) : error ? (
                     <div className="flex items-center gap-2 py-4 text-red-500">
-                        <span className="i-mingcute-alert-line text-lg"></span>
+                        <MingcuteAlertLine width={20} height={20} />
                         <span>{error}</span>
                     </div>
                 ) : translation ? (
@@ -151,10 +152,10 @@ export default function Panel({ text, style: initialStyle }: PanelProps) {
                         className="flex items-center text-gray-400 transition-colors hover:text-gray-600"
                         onClick={() => setRawTextVisible(!rawTextVisible)}
                     >
-                        <span className="i-mingcute-translate-2-line text-lg"></span>
+                        <MingcuteTranslate2Line width={20} height={20} />
                     </button>
                     <button title="复制文本" onClick={handleCopy} className="flex items-center text-gray-400 transition-colors hover:text-gray-600">
-                        <span className="i-mingcute-copy-line text-lg"></span>
+                        <MingcuteCopyLine width={20} height={20} />
                     </button>
                 </div>
             </div>

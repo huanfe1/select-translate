@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 
+import { MingcuteTranslate2Line } from './components/Icon';
 import Panel from './components/Panel';
 
 function App() {
@@ -23,7 +24,7 @@ function App() {
                 if (panelStyle) setPanelStyle(undefined);
 
                 const selection = window.getSelection()?.toString();
-                if (!selection || !/[a-zA-Z]/.test(selection)) {
+                if (!selection || (selection.match(/[a-zA-Z]/g)?.length ?? 0) < selection.length * 0.5) {
                     setIconStyle(undefined);
                     return;
                 }
@@ -37,14 +38,14 @@ function App() {
     }, [iconStyle]);
 
     return (
-        <div ref={containerRef}>
+        <div ref={containerRef} style={{ all: 'initial' }} translate="no">
             {iconStyle && (
                 <div
                     onClick={iconClick}
                     className="fixed z-[99999] flex cursor-pointer items-center justify-center rounded-xl border border-gray-300 bg-gray-200 p-1.5 text-black shadow-sm hover:bg-gray-300"
                     style={iconStyle}
                 >
-                    <span className="i-mingcute-translate-2-line text-2xl"></span>
+                    <MingcuteTranslate2Line />
                 </div>
             )}
             {panelStyle && <Panel text={panelText} style={panelStyle} />}
