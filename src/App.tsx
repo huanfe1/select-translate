@@ -28,8 +28,14 @@ function App() {
                     setIconStyle(undefined);
                     return;
                 }
+                // 去除符号和空白后的文本
+                const textWithoutSymbols = selection.replace(/[\s\W_]/g, '');
+                if (!textWithoutSymbols) {
+                    setIconStyle(undefined);
+                    return;
+                }
                 const chineseCount = selection.match(/[\u4e00-\u9fff]/g)?.length ?? 0;
-                if (chineseCount / selection.length > 0.7) {
+                if (chineseCount / textWithoutSymbols.length > 0.7) {
                     setIconStyle(undefined);
                     return;
                 }
