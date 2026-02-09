@@ -24,7 +24,12 @@ function App() {
                 if (panelStyle) setPanelStyle(undefined);
 
                 const selection = window.getSelection()?.toString();
-                if (!selection || (selection.match(/[a-zA-Z]/g)?.length ?? 0) < selection.length * 0.5) {
+                if (!selection) {
+                    setIconStyle(undefined);
+                    return;
+                }
+                const chineseCount = selection.match(/[\u4e00-\u9fff]/g)?.length ?? 0;
+                if (chineseCount / selection.length > 0.7) {
                     setIconStyle(undefined);
                     return;
                 }
