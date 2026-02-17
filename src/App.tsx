@@ -14,6 +14,7 @@ function App() {
     const iconClick = (e: React.MouseEvent<HTMLDivElement>) => {
         setIconStyle(undefined);
         setPanelStyle({ left: e.clientX - 160, top: e.clientY - 50, width: 320 });
+        e.stopPropagation();
     };
 
     useEffect(() => {
