@@ -14,9 +14,8 @@ export default function Panel({ text, style: initialStyle }: PanelProps) {
 
     const [style, setStyle] = useState<CSSProperties>(initialStyle || {});
     const [translation, setTranslation] = useState<string>('');
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>('');
-    const textRef = useRef<string>('');
 
     const [rawTextVisible, setRawTextVisible] = useState<boolean>(GM_getValue('rawTextVisible', false));
 
@@ -25,31 +24,37 @@ export default function Panel({ text, style: initialStyle }: PanelProps) {
     const dragOffsetRef = useRef<{ offsetX: number; offsetY: number } | null>(null);
 
     useEffect(() => {
-        if (textRef.current === text) return;
-        textRef.current = text;
+        if (!text.trim()) {
+            setLoading(false);
+            return;
+        }
+
+        setLoading(true);
         setTranslation('');
         setError('');
-        translateText(text);
+
+        let cancelled = false;
+
+        translate(text)
+            .then(result => {
+                if (!cancelled) setTranslation(result);
+            })
+            .catch(err => {
+                if (!cancelled) {
+                    setError('翻译失败，请稍后重试');
+                    console.error('翻译错误:', err);
+                }
+            })
+            .finally(() => {
+                if (!cancelled) setLoading(false);
+            });
+
+        return () => {
+            cancelled = true;
+        };
     }, [text]);
 
     useEffect(() => GM_setValue('rawTextVisible', rawTextVisible), [rawTextVisible]);
-
-    const translateText = async (textToTranslate: string) => {
-        if (!textToTranslate.trim()) return;
-
-        setLoading(true);
-        setError('');
-
-        try {
-            const translatedText = await translate(textToTranslate);
-            setTranslation(translatedText);
-        } catch (err) {
-            setError('翻译失败，请稍后重试');
-            console.error('翻译错误:', err);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const handleCopy = () => {
         navigator.clipboard.writeText(translation || text);
@@ -134,13 +139,11 @@ export default function Panel({ text, style: initialStyle }: PanelProps) {
                         <MingcuteAlertLine width={20} height={20} />
                         <span>{error}</span>
                     </div>
-                ) : translation ? (
+                ) : (
                     <div className="space-y-2 text-sm leading-relaxed text-gray-800">
                         {rawTextVisible && <div className="opacity-50">{text}</div>}
                         <div className="text-lg">{translation}</div>
                     </div>
-                ) : (
-                    <div className="py-4 text-gray-400">等待翻译...</div>
                 )}
             </div>
 
