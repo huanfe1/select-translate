@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 
 import App from './App';
 import tailwindcss from './styles/tailwind.css?inline';
+import { registerEngineMenu } from './utils/settings';
 
 const sheet = new CSSStyleSheet();
 sheet.replaceSync(tailwindcss);
@@ -14,6 +15,8 @@ if (import.meta.hot) {
         sheet.replaceSync(module?.default);
     });
 }
+
+registerEngineMenu();
 
 const host = GM_addElement(document.body, 'div');
 const shadow = host.attachShadow({ mode: 'open' });

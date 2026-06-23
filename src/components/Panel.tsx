@@ -1,21 +1,27 @@
 import { GM_getValue, GM_setValue } from '$';
 import { type CSSProperties, useEffect, useRef, useState } from 'react';
 
-import { translate } from '../utils/translate';
+import { formatEngineLabel, type TranslateTask } from '../utils/translate';
 import { MingcuteAlertLine, MingcuteCopyLine, MingcuteLoadingLine, MingcuteTranslate2Line } from './Icon';
 
 interface PanelProps {
     text: string;
     style?: CSSProperties;
+    translateTask: TranslateTask;
 }
 
-export default function Panel({ text, style: initialStyle }: PanelProps) {
+export default function Panel({ text, style: initialStyle, translateTask }: PanelProps) {
     const GAP = 10;
 
     const [style, setStyle] = useState<CSSProperties>(initialStyle || {});
     const [translation, setTranslation] = useState<string>('');
+    const [footerLabel, setFooterLabel] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(true);
+    const [loadingStatus, setLoadingStatus] = useState<string>('翻译中...');
+    const [loadingProgress, setLoadingProgress] = useState<number | undefined>();
     const [error, setError] = useState<string>('');
+
+    const stageLabel = { detect: '语言检测模型', translate: '翻译模型' } as const;
 
     const [rawTextVisible, setRawTextVisible] = useState<boolean>(GM_getValue('rawTextVisible', false));
 
@@ -31,13 +37,38 @@ export default function Panel({ text, style: initialStyle }: PanelProps) {
 
         setLoading(true);
         setTranslation('');
+        setFooterLabel('');
+        setLoadingStatus('翻译中...');
+        setLoadingProgress(undefined);
         setError('');
 
         let cancelled = false;
 
-        translate(text)
+        translateTask.onProgress(progress => {
+            if (cancelled) return;
+
+            if (progress.status === 'loading') {
+                setLoadingStatus(`正在下载${stageLabel[progress.stage]}...`);
+                setLoadingProgress(progress.progress);
+                return;
+            }
+
+            if (progress.status === 'extracting') {
+                setLoadingProgress(undefined);
+                setLoadingStatus(`正在加载${stageLabel[progress.stage]}到内存...`);
+                return;
+            }
+
+            setLoadingProgress(undefined);
+            setLoadingStatus(progress.stage === 'detect' ? '正在检测语言...' : '正在翻译...');
+        });
+
+        translateTask.promise
             .then(result => {
-                if (!cancelled) setTranslation(result);
+                if (!cancelled) {
+                    setTranslation(result.text);
+                    setFooterLabel(formatEngineLabel(result));
+                }
             })
             .catch(err => {
                 if (!cancelled) {
@@ -52,7 +83,7 @@ export default function Panel({ text, style: initialStyle }: PanelProps) {
         return () => {
             cancelled = true;
         };
-    }, [text]);
+    }, [text, translateTask]);
 
     useEffect(() => GM_setValue('rawTextVisible', rawTextVisible), [rawTextVisible]);
 
@@ -130,9 +161,22 @@ export default function Panel({ text, style: initialStyle }: PanelProps) {
         >
             <div className="p-4">
                 {loading ? (
-                    <div className="flex items-center justify-center gap-2 py-4 text-gray-500">
-                        <MingcuteLoadingLine width={20} height={20} className="animate-spin" />
-                        <span>翻译中...</span>
+                    <div className="flex flex-col items-center gap-3 py-4 text-gray-500">
+                        <div className="flex items-center gap-2">
+                            <MingcuteLoadingLine width={20} height={20} className="animate-spin" />
+                            <span>{loadingStatus}</span>
+                        </div>
+                        {loadingProgress !== undefined && (
+                            <div className="w-full px-2">
+                                <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200">
+                                    <div
+                                        className="h-full rounded-full bg-blue-500 transition-all duration-300"
+                                        style={{ width: `${loadingProgress}%` }}
+                                    />
+                                </div>
+                                <div className="mt-1 text-center text-xs text-gray-400">{loadingProgress}%</div>
+                            </div>
+                        )}
                     </div>
                 ) : error ? (
                     <div className="flex items-center gap-2 py-4 text-red-500">
@@ -148,7 +192,7 @@ export default function Panel({ text, style: initialStyle }: PanelProps) {
             </div>
 
             <div className="flex cursor-grab items-center justify-between border-t border-gray-200 bg-gray-100 px-4 py-3 active:cursor-grabbing" onMouseDown={handleMouseDown}>
-                <div className="text-xs text-gray-500">Google Translator</div>
+                <div className="text-xs text-gray-500">{footerLabel || loadingStatus}</div>
                 <div className="flex items-center gap-3">
                     <button
                         title="是否显示原始文本"
